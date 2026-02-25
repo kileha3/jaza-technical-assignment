@@ -1,4 +1,5 @@
 package jaza.technical.assessment.ui.screens.userdetail
+
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -40,6 +41,7 @@ class UserDetailViewModel @Inject constructor(
                         isLoading = false,
                         userDetail = result.getOrNull()?.toDomain()
                     )
+
                     else -> it.copy(
                         isLoading = false,
                         error = result.exceptionOrNull()?.message
@@ -49,7 +51,7 @@ class UserDetailViewModel @Inject constructor(
         }
     }
 
-    fun retry() =  loadUserDetail()
+    fun retry() = loadUserDetail()
 }
 
 data class UserDetailUiState(

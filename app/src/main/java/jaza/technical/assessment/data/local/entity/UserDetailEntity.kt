@@ -11,6 +11,6 @@ data class UserDetailEntity(
     val bio: String?,
     val followers: Int,
     val publicRepos: Int
-){
+) {
     fun toDomain() = UserDetail(id, username, avatarUrl, bio, followers, publicRepos)
 }

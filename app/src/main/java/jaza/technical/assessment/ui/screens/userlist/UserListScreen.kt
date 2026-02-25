@@ -152,10 +152,12 @@ fun UserListContent(
                         }
                     }
                 }
+
                 is LoadState.Error -> {
                     val error = userPagingItems.loadState.append as LoadState.Error
                     onError(error.error)
                 }
+
                 else -> {}
             }
 

@@ -24,7 +24,12 @@ class UserRepositoryImpl @Inject constructor(
     override fun getUsers(): Flow<PagingData<UserEntity>> {
         val pagingSourceFactory = { db.userDao.getPagedUsers() }
         return Pager(
-            config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                enablePlaceholders = false,
+                initialLoadSize = PAGE_SIZE * 2,
+                prefetchDistance = 4
+            ),
             remoteMediator = UserRemoteMediator(api, db),
             pagingSourceFactory = pagingSourceFactory
         ).flow
@@ -47,10 +52,11 @@ class UserRepositoryImpl @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     override suspend fun refreshUsers(page: Int) {
-        try{
-            val users = api.getUsers(since = page, perPage = PAGE_SIZE).map { it.toEntity() }
+        try {
+            db.userDao.clearAll()
+            val users = api.getUsers(since = page).map { it.toEntity() }
             db.userDao.insertAll(users)
-        }catch (exception: Exception){
+        } catch (exception: Exception) {
             throw networkException(exception)
         }
     }

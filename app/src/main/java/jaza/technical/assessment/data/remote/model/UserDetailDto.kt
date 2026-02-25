@@ -16,6 +16,6 @@ data class UserDetailDto(
     val followers: Int,
     @SerializedName("public_repos")
     val publicRepos: Int
-){
+) {
     fun toEntity() = UserDetailEntity(id, username, avatarUrl, bio, followers, publicRepos)
 }

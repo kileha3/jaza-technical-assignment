@@ -14,7 +14,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import jaza.technical.assessment.ui.navigatiton.GitHubUserAppNavGraph
 import jaza.technical.assessment.ui.theme.GitHubUserBrowserTheme
 import jaza.technical.assessment.ui.theme.ThemeViewModel
-import kotlin.getValue
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

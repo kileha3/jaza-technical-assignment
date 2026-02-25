@@ -12,7 +12,7 @@ data class UserDto(
     val avatarUrl: String,
     @SerializedName("type")
     val type: String
-){
+) {
     fun toEntity() = UserEntity(
         id = id,
         username = username,
