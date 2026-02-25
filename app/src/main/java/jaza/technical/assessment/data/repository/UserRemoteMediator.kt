@@ -10,7 +10,6 @@ import jaza.technical.assessment.data.local.entity.UserEntity
 import jaza.technical.assessment.data.remote.api.GitHubApi
 import jaza.technical.assessment.utils.ExceptionUtil.networkException
 
-
 @OptIn(ExperimentalPagingApi::class)
 class UserRemoteMediator(
     private val api: GitHubApi,
@@ -22,32 +21,24 @@ class UserRemoteMediator(
         state: PagingState<Int, UserEntity>
     ): MediatorResult {
         return try {
-
             val since = when (loadType) {
                 LoadType.REFRESH -> 0
-
-                LoadType.PREPEND -> {
-                    return MediatorResult.Success(endOfPaginationReached = true)
-                }
-
+                LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
-                    val lastItem = state.lastItemOrNull()
-                        ?: return MediatorResult.Success(endOfPaginationReached = true)
-                    lastItem.id
+                    val lastItem = state.lastItemOrNull() ?: return MediatorResult.Success(endOfPaginationReached = false)
+                    lastItem.id.toInt()
                 }
-            }.toInt()
-
-            val cachedUsers = db.userDao.getPagedUsersAsync(since)
-
-            if (cachedUsers.isNotEmpty()) {
-                return MediatorResult.Success(endOfPaginationReached = false)
             }
 
-            val users = api.getUsers(since = since, perPage = state.config.pageSize)
+            val users = api.getUsers(
+                since = since,
+                perPage = state.config.pageSize
+            )
+
             db.withTransaction {
-                val entities = users.map { it.toEntity() }
-                db.userDao.insertAll(entities)
+                db.userDao.insertAll(users.map { it.toEntity() })
             }
+
             MediatorResult.Success(endOfPaginationReached = users.isEmpty())
         } catch (exception: Exception) {
             MediatorResult.Error(networkException(exception))

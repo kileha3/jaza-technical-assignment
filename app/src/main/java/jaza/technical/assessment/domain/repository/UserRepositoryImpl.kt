@@ -53,7 +53,6 @@ class UserRepositoryImpl @Inject constructor(
     @OptIn(ExperimentalPagingApi::class)
     override suspend fun refreshUsers(page: Int) {
         try {
-            db.userDao.clearAll()
             val users = api.getUsers(since = page).map { it.toEntity() }
             db.userDao.insertAll(users)
         } catch (exception: Exception) {

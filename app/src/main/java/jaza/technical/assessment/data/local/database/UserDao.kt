@@ -14,11 +14,4 @@ interface UserDao {
 
     @Query("SELECT * FROM users ORDER BY id ASC")
     fun getPagedUsers(): PagingSource<Int, UserEntity>
-
-    @Query("SELECT * FROM users WHERE id > :since ORDER BY id ASC")
-    suspend fun getPagedUsersAsync(since: Int): List<UserEntity>
-
-
-    @Query("DELETE FROM users")
-    suspend fun clearAll()
 }
