@@ -72,6 +72,9 @@ Skipped advanced bonuses like search to focus on core functionalities.
 4. **Enhanced Security**
     - Avoid hardcoding the API base URL; instead, properties and the Gradle ecosystem would have been used to handle this.
 
+5. **Database Migration**
+    - Would have added database migration to accomodate entity changes and avoid schema conflicts.
+
 
 
 ## Building and Running the App
