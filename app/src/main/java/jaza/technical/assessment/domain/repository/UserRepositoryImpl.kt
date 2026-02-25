@@ -10,7 +10,7 @@ import jaza.technical.assessment.data.local.entity.UserEntity
 import jaza.technical.assessment.data.remote.api.GitHubApi
 import jaza.technical.assessment.data.repository.UserRemoteMediator
 import jaza.technical.assessment.data.repository.UserRepository
-import jaza.technical.assessment.utils.Constants
+import jaza.technical.assessment.utils.Constants.PAGE_SIZE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -23,7 +23,7 @@ class UserRepositoryImpl @Inject constructor(
     override fun getUsers(): Flow<PagingData<UserEntity>> {
         val pagingSourceFactory = { db.userDao.getPagedUsers() }
         return Pager(
-            config = PagingConfig(pageSize = Constants.PAGE_SIZE, enablePlaceholders = false),
+            config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
             remoteMediator = UserRemoteMediator(api, db),
             pagingSourceFactory = pagingSourceFactory
         ).flow
@@ -45,7 +45,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun refreshUsers(page: Int) {
-        val users = api.getUsers(since = page, perPage = Constants.PAGE_SIZE).map { it.toEntity() }
+        val users = api.getUsers(since = page, perPage = PAGE_SIZE).map { it.toEntity() }
         db.userDao.insertAll(users)
     }
 }
