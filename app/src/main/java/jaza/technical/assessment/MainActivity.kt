@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
+import jaza.technical.assessment.ui.navigatiton.GitHubUserAppNavGraph
 import jaza.technical.assessment.ui.theme.GitHubUserBrowserTheme
 import jaza.technical.assessment.ui.theme.ThemeViewModel
 import kotlin.getValue
@@ -29,7 +30,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
+                    GitHubUserAppNavGraph(
+                        isDarkTheme = isDarkTheme,
+                        onThemeToggle = themeViewModel::toggleTheme
+                    )
                 }
             }
         }

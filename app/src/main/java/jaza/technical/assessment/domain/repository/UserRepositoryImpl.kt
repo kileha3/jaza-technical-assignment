@@ -11,6 +11,7 @@ import jaza.technical.assessment.data.remote.api.GitHubApi
 import jaza.technical.assessment.data.repository.UserRemoteMediator
 import jaza.technical.assessment.data.repository.UserRepository
 import jaza.technical.assessment.utils.Constants.PAGE_SIZE
+import jaza.technical.assessment.utils.ExceptionUtil.networkException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -44,8 +45,13 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalPagingApi::class)
     override suspend fun refreshUsers(page: Int) {
-        val users = api.getUsers(since = page, perPage = PAGE_SIZE).map { it.toEntity() }
-        db.userDao.insertAll(users)
+        try{
+            val users = api.getUsers(since = page, perPage = PAGE_SIZE).map { it.toEntity() }
+            db.userDao.insertAll(users)
+        }catch (exception: Exception){
+            throw networkException(exception)
+        }
     }
 }

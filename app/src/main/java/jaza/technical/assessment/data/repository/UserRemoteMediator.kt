@@ -1,5 +1,6 @@
 package jaza.technical.assessment.data.repository
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -8,6 +9,8 @@ import androidx.room.withTransaction
 import jaza.technical.assessment.data.local.database.UserDatabase
 import jaza.technical.assessment.data.local.entity.UserEntity
 import jaza.technical.assessment.data.remote.api.GitHubApi
+import jaza.technical.assessment.utils.ExceptionUtil.networkException
+
 
 @OptIn(ExperimentalPagingApi::class)
 class UserRemoteMediator(
@@ -28,6 +31,7 @@ class UserRemoteMediator(
                     lastItem.id
                 }
             }.toInt()
+            Log.v("KilehaDebugging", "loadKey = $loadKey, loadType = $loadType")
 
             val users = api.getUsers(since = loadKey)
             db.withTransaction {
@@ -35,8 +39,8 @@ class UserRemoteMediator(
                 db.userDao.insertAll(entities)
             }
             MediatorResult.Success(endOfPaginationReached = users.isEmpty())
-        } catch (e: Exception) {
-            MediatorResult.Error(e)
+        } catch (exception: Exception) {
+            MediatorResult.Error(networkException(exception))
         }
     }
 }
